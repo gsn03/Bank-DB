@@ -1,0 +1,144 @@
+CREATE TABLE Agencia (
+	Num_agencia   	INT PRIMARY KEY,
+	Endereco      	VARCHAR(255),
+	Telefone      	VARCHAR(20),
+	Gerente_agencia   INT
+);
+
+CREATE TABLE Funcionario (
+	Matricula     	INT PRIMARY KEY,
+	Nome          	VARCHAR(100),
+	Telefone      	VARCHAR(20),
+	Login         	VARCHAR(50) UNIQUE,
+	Senha         	VARCHAR(255),
+	Endereco      	VARCHAR(255),
+	Data_admissao 	DATE
+);
+
+CREATE TABLE Gerente (
+	Matricula     	INT PRIMARY KEY,
+	-- Herda de Funcionario
+	FOREIGN KEY (Matricula) REFERENCES Funcionario(Matricula),
+	aprovar_limite	BOOLEAN
+);
+
+CREATE TABLE Administrativo (
+	Matricula     	INT PRIMARY KEY,
+	Setor         	VARCHAR(50),
+	Nivel_acesso  	INT,
+	gerente_resp  	INT,
+	Num_agencia   	INT,
+	FOREIGN KEY (Matricula) REFERENCES Funcionario(Matricula),
+	FOREIGN KEY (Num_agencia) REFERENCES Agencia(Num_agencia)
+);
+
+CREATE TABLE Cliente (
+	CPF_CNPJ      	VARCHAR(20) PRIMARY KEY,
+	Endereco      	VARCHAR(255),
+	Telefone      	VARCHAR(20)
+);
+
+CREATE TABLE Pessoa_Fisica (
+	CPF           	VARCHAR(14) PRIMARY KEY,
+	Nome_completo 	VARCHAR(100),
+	Data_nasc     	DATE,
+	FOREIGN KEY (CPF) REFERENCES Cliente(CPF_CNPJ)
+);
+
+CREATE TABLE Pessoa_Juridica (
+	CNPJ          	VARCHAR(18) PRIMARY KEY,
+	Razao_social  	VARCHAR(100),
+	FOREIGN KEY (CNPJ) REFERENCES Cliente(CPF_CNPJ)
+);
+
+CREATE TABLE Dependente (
+	Nome_dependente   VARCHAR(100) PRIMARY KEY,
+	Endereco      	VARCHAR(255),
+	Telefone      	VARCHAR(20)
+);
+
+-- CONTAS
+CREATE TABLE Contas (
+	Num_conta     	INT PRIMARY KEY,
+	limite        	DECIMAL(12,2),
+	Aberta_por    	INT,
+	Saldo         	DECIMAL(12,2),
+	Data_abertura 	DATE,
+	CPF_CNPJ      	VARCHAR(20),
+	FOREIGN KEY (Aberta_por) REFERENCES Funcionario(Matricula),
+	FOREIGN KEY (CPF_CNPJ) REFERENCES Cliente(CPF_CNPJ)
+);
+
+CREATE TABLE Conta_corrente (
+	Num_conta     	INT PRIMARY KEY,
+	Senha         	VARCHAR(255),
+	Saldo         	DECIMAL(12,2),
+	FOREIGN KEY (Num_conta) REFERENCES Contas(Num_conta)
+);
+
+CREATE TABLE Conta_poupanca (
+	Num_conta     	INT PRIMARY KEY,
+	Saldo         	DECIMAL(12,2),
+	FOREIGN KEY (Num_conta) REFERENCES Contas(Num_conta)
+);
+
+CREATE TABLE Cartao (
+	Num_cartao    	VARCHAR(25) PRIMARY KEY,
+	Cod_verificacao   VARCHAR(10),
+	Limite        	DECIMAL(12,2),
+	Validade      	DATE,
+	Status        	VARCHAR(20),
+	Bandeira      	VARCHAR(30),
+	Tipo          	VARCHAR(30),
+	Conta         	INT,
+	FOREIGN KEY (Conta) REFERENCES Contas(Num_conta)
+);
+
+-- TRANSAÇÕES
+CREATE TABLE Transacao (
+	id_transacao  	INT PRIMARY KEY,
+	Data          	DATE,
+	Hora          	TIME,
+	Valor         	DECIMAL(12,2)
+);
+
+CREATE TABLE Transferencia (
+	id_transacao  	INT PRIMARY KEY,
+	FOREIGN KEY (id_transacao) REFERENCES Transacao(id_transacao)
+);
+
+CREATE TABLE Saque (
+	id_saque      	INT PRIMARY KEY,
+	num_conta     	INT,
+	FOREIGN KEY (num_conta) REFERENCES Contas(Num_conta)
+);
+
+CREATE TABLE Deposito (
+	id_deposito   	INT PRIMARY KEY,
+	num_conta     	INT,
+	FOREIGN KEY (num_conta) REFERENCES Contas(Num_conta)
+);
+
+CREATE TABLE Envia_transferencia (
+	id_transferencia  INT PRIMARY KEY,
+	num_corrente  	INT,
+	FOREIGN KEY (id_transferencia) REFERENCES Transferencia(id_transacao),
+	FOREIGN KEY (num_corrente) REFERENCES Conta_corrente(Num_conta)
+);
+
+CREATE TABLE Recebe_transferencia (
+	id_transferencia  INT PRIMARY KEY,
+	num_conta     	INT,
+	FOREIGN KEY (id_transferencia) REFERENCES Transferencia(id_transacao),
+	FOREIGN KEY (num_conta) REFERENCES Contas(Num_conta)
+);
+
+CREATE TABLE Gerencia_agencia (
+	Num_agencia   	INT,
+	matricula_gerente INT,
+	PRIMARY KEY (Num_agencia, matricula_gerente),
+	FOREIGN KEY (Num_agencia) REFERENCES Agencia(Num_agencia),
+	FOREIGN KEY (matricula_gerente) REFERENCES Gerente(Matricula)
+);
+
+
