@@ -7,8 +7,7 @@ import (
     _ "github.com/lib/pq"
 )
 
-const connStr = "user=seuusuario password=suasenha dbname=seudb sslmode=disable"
-
+const connStr = "user=usuario password=senha dbname=db host=db sslmode=disable"
 
 func main() {
     db, err := sql.Open("postgres", connStr)
@@ -91,8 +90,7 @@ func main() {
     fmt.Println("Conta criada:", numConta)
     AtualizarContaSaldo(db, numConta, 999.99)
     fmt.Println("Saldo conta atualizado")
-    // Subclasse corrente
-    // Simula Conta_corrente
+
     err = CriarContaCorrente(db, numConta)
     if err != nil { fmt.Println("Erro criando Conta Corrente:", err) } else { fmt.Println("Conta Corrente vinculada") }
 
@@ -106,7 +104,6 @@ func main() {
     AtualizarCartaoStatus(db, "8888999911112222", "bloqueado")
     fmt.Println("Status cartão atualizado")
 
-    // ============ TRANSACOES ===============
     fmt.Println("\n=== TRANSACAO ===")
     idTrans, _ := CriarTransacao(db, "2024-07-25", "14:00:00", 1000.0, "deposito", nil, &numConta)
     fmt.Println("Transação depósito criada:", idTrans)
@@ -167,24 +164,44 @@ func main() {
         rows.Scan(&num, &bandeira, &tipo, &limite, &status)
         fmt.Println(num, bandeira, tipo, limite, status)
     }
-
+    fmt.Println("Dependentes:")
+    rows, _ = BuscarDependentes(db)
+    for rows.Next() {
+        var id, idCli int
+        var nome string
+        rows.Scan(&id, &nome, &idCli)
+        fmt.Println(id, nome, idCli)
+    }
+    
     // ===== EXCLUSÕES FINAIS =====
     fmt.Println("\n--- LIMPEZA FINAL ---")
+
     DeletarTransacao(db, idTrans)
     DeletarTransacao(db, idSaque)
     DeletarTransacao(db, idTransf)
     DeletarCartao(db, "8888999911112222")
+
+    DeletarContaCorrente(db, numConta)
+    DeletarContaPoupanca(db, numContaP)
+
     DeletarConta(db, numConta)
     DeletarConta(db, numContaP)
+
+    DeletarDependente(db, idDep)
+
     DeletarPessoaFisica(db, idCli)
     DeletarPessoaJuridica(db, idCli2)
-    DeletarDependente(db, idDep)
+
     DeletarCliente(db, idCli)
     DeletarCliente(db, idCli2)
+
     DeletarAdministrativo(db, matAdm)
-    DeletarFuncionario(db, matAdm)
     DeletarAgencia(db, numAg)
+
     DeletarGerente(db, mat)
+
+    DeletarFuncionario(db, matAdm)
     DeletarFuncionario(db, mat)
+
     fmt.Println("--- Teste CRUD COMPLETO Finalizado ---")
 }

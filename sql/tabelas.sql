@@ -3,7 +3,7 @@
 -- =========================
 
 CREATE TABLE Funcionario (
-    Matricula      INT PRIMARY KEY,
+    Matricula      SERIAL PRIMARY KEY,      -- SERIAL para auto-incremento
     Nome           VARCHAR(100) NOT NULL,
     Telefone       VARCHAR(20),
     Cargo          VARCHAR(50) NOT NULL,      -- Exemplo: 'Gerente' ou 'Administrativo'
@@ -71,7 +71,7 @@ CREATE TABLE Dependente (
 -- =============
 
 CREATE TABLE Agencia (
-    Num_agencia       INT PRIMARY KEY,
+    Num_agencia       SERIAL PRIMARY KEY,       -- SERIAL para auto-incremento
     Endereco          VARCHAR(255) NOT NULL,
     Telefone          VARCHAR(20),
     Gerente_agencia   INT UNIQUE NOT NULL,      -- Um gerente só pode gerenciar uma agência
@@ -87,7 +87,7 @@ ADD CONSTRAINT fk_agencia_admin FOREIGN KEY (Num_agencia) REFERENCES Agencia(Num
 -- =============
 
 CREATE TABLE Conta (
-    Num_conta        INT PRIMARY KEY,
+    Num_conta        SERIAL PRIMARY KEY,       -- SERIAL para auto-incremento
     Tipo             VARCHAR(10) NOT NULL CHECK (Tipo IN ('corrente', 'poupanca')),
     Limite           DECIMAL(12,2),
     Saldo            DECIMAL(12,2) DEFAULT 0,

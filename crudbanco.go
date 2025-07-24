@@ -2,10 +2,8 @@ package main
 
 import (
     "database/sql"
-    _ "github.com/lib/pq"
+    _"github.com/lib/pq"
 )
-
-const connStr = "user=seuusuario password=suasenha dbname=seudb sslmode=disable"
 
 // ===== FUNCIONARIO CRUD =====
 func CriarFuncionario(db *sql.DB, nome, telefone, cargo, dataAdmissao, login, senha string) (int, error) {
@@ -169,6 +167,16 @@ func CriarConta(db *sql.DB, tipo string, limite, saldo float64, status, dataAber
     return num, err
 }
 
+func CriarContaCorrente(db *sql.DB, numConta int) error {
+    _, err := db.Exec(`INSERT INTO Conta_corrente VALUES ($1)`, numConta)
+    return err
+}
+
+func CriarContaPoupanca(db *sql.DB, numConta int) error {
+    _, err := db.Exec(`INSERT INTO Conta_poupanca VALUES ($1)`, numConta)
+    return err
+}
+
 func BuscarContas(db *sql.DB) (*sql.Rows, error) {
     return db.Query(`SELECT Num_conta, Tipo, Limite, Saldo, Status FROM Conta`)
 }
@@ -180,6 +188,15 @@ func AtualizarContaSaldo(db *sql.DB, num int, saldo float64) error {
 
 func DeletarConta(db *sql.DB, num int) error {
     _, err := db.Exec(`DELETE FROM Conta WHERE Num_conta = $1`, num)
+    return err
+}
+
+func DeletarContaCorrente(db *sql.DB, numConta int) error {
+    _, err := db.Exec(`DELETE FROM Conta_corrente WHERE Num_conta = $1`, numConta)
+    return err
+}
+func DeletarContaPoupanca(db *sql.DB, numConta int) error {
+    _, err := db.Exec(`DELETE FROM Conta_poupanca WHERE Num_conta = $1`, numConta)
     return err
 }
 

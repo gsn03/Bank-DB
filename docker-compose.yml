@@ -1,0 +1,30 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: bankdb-postgres
+    environment:
+      POSTGRES_USER: usuario
+      POSTGRES_PASSWORD: senha
+      POSTGRES_DB: db
+    ports:
+      - "5439:5439"
+    volumes:
+      - ./sql/tabelas.sql:/docker-entrypoint-initdb.d/01-tabelas.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U usuario"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_HOST: db
+      DB_PORT: 5439
+      DB_USER: usuario
+      DB_PASS: senha
+      DB_NAME: db
+    command: ["./app"]

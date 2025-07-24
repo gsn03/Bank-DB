@@ -8,6 +8,15 @@ INSERT INTO Funcionario VALUES (3, 'Carlos Gerente', '81990000003', 'Gerente', '
 INSERT INTO Gerente VALUES (1, TRUE);
 INSERT INTO Gerente VALUES (3, TRUE);
 
+-- ==========================
+-- AGÊNCIAS
+-- ==========================
+INSERT INTO Agencia VALUES (1, 'Centro', '8133334444', 1);
+INSERT INTO Agencia VALUES (2, 'Boa Viagem', '8144445555', 3);
+
+-- ==========================
+-- ADMINISTRATIVO
+-- ==========================
 INSERT INTO Administrativo VALUES (2, 'RH', 1, 1, 1);
 
 -- ==========================
@@ -31,12 +40,6 @@ INSERT INTO Dependente (Nome_dependente, Endereco, Telefone, Id_cliente)
 VALUES ('Lucas Filho', 'Rua D, 100', '81990000011', 1); -- Id_dependente = 1
 INSERT INTO Dependente (Nome_dependente, Endereco, Telefone, Id_cliente)
 VALUES ('Pedro Menor', 'Av. E, 200', '81990000012', 3); -- Id_dependente = 2
-
--- ==========================
--- AGÊNCIAS
--- ==========================
-INSERT INTO Agencia VALUES (1, 'Centro', '8133334444', 1);
-INSERT INTO Agencia VALUES (2, 'Boa Viagem', '8144445555', 3);
 
 -- ==========================
 -- CONTAS
